@@ -2,7 +2,8 @@ import * as React from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import {CustomContainer, CustomTab, CustomTabs} from './styles';
-import { Delete } from '@mui/icons-material';
+import { ethers } from 'ethers';
+
 
 import PoolTable from '../poolTable/PoolTable';
 import DashTable from '../dashTable/DashTable';
@@ -42,13 +43,50 @@ function a11yProps(index: number) {
 
 interface TabNavProps {
     walletAddress: string,
+    ethBal: ethers.BigNumberish | undefined,
+    // contractAddress: string;
+    // provider: ethers.providers.Web3Provider | undefined,
+    // signer: ethers.providers.JsonRpcSigner | undefined,
+    // contract: ethers.Contract | undefined,
+    changeWallet: Function,
+    changeEthers: Function,
+    changeEth: Function,
+    callback: Function,
+    buttonText: string,
+    toggleButtonText: Function,
+    tokenBal: string,
+    checkTokenBal: Function,
+    setDeposit: Function,
+    poolStats: any,
 }
 
 export default function TabNav(props: TabNavProps) {
+    const {
+        walletAddress,
+        ethBal,
+        // contractAddress, 
+        // provider,
+        // signer,
+        // contract,
+        changeWallet,
+        changeEth,
+        changeEthers,
+        callback,
+        buttonText,
+        toggleButtonText,
+        tokenBal,
+        checkTokenBal,
+        setDeposit,
+        poolStats,
+    } = props;
+
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+    if(buttonText !== 'Approve') {
+        toggleButtonText();
+    }
   };
 
 
@@ -62,8 +100,19 @@ export default function TabNav(props: TabNavProps) {
             </CustomTabs>
         </Box>
         <TabNavHead value={value} index={0}>
-            Pool
-            <PoolTable/>
+            <PoolTable
+                walletAddress={walletAddress} 
+                ethBal={ethBal} 
+                changeWallet={changeWallet}
+                changeEthers={changeEthers}
+                changeEth={changeEth}
+                approve={callback}
+                buttonText={buttonText}
+                tokenBal={tokenBal}
+                checkTokenBal={checkTokenBal}
+                setDeposit={setDeposit}
+                poolStats={poolStats}
+            />
         </TabNavHead>
         <TabNavHead value={value} index={1}>
             Dashboard

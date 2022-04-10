@@ -8,10 +8,10 @@ import { Box } from '@mui/material';
 interface Props {
     walletAddress: string,
     ethBal: ethers.BigNumberish | undefined,
-    contractAddress: string;
-    provider: ethers.providers.Web3Provider | undefined,
-    signer: ethers.providers.JsonRpcSigner | undefined,
-    contract: ethers.Contract | undefined,
+    // contractAddress: string;
+    // provider: ethers.providers.Web3Provider | undefined,
+    // signer: ethers.providers.JsonRpcSigner | undefined,
+    // contract: ethers.Contract | undefined,
     changeWallet: Function,
     changeEthers: Function,
     changeEth: Function,
@@ -21,10 +21,10 @@ const Navbar : React.FC<Props> = (props) => {
     const {
         walletAddress,
         ethBal,
-        contractAddress, 
-        provider,
-        signer,
-        contract,
+        // contractAddress, 
+        // provider,
+        // signer,
+        // contract,
         changeWallet,
         changeEth,
         changeEthers,
@@ -43,11 +43,11 @@ const Navbar : React.FC<Props> = (props) => {
                 {
                     !walletAddress && 
                     <WalletButton 
-                        walletAddress={walletAddress}
-                        contractAddress={contractAddress} 
-                        provider={provider} 
-                        signer={signer}
-                        contract={contract}
+                        // walletAddress={walletAddress}
+                        // contractAddress={contractAddress} 
+                        // provider={provider} 
+                        // signer={signer}
+                        // contract={contract}
                         changeWallet={changeWallet}
                         changeEthers={changeEthers}
                         changeEth={changeEth}
@@ -57,7 +57,7 @@ const Navbar : React.FC<Props> = (props) => {
                     walletAddress && (
                     <Box sx={{ 'display': 'flex', 'margin': '.5rem', 'justifyContent': 'space-around', 'border': '2px solid black', 'borderRadius': '5px'}}>
                         <Box sx={{'margin': '0 .5rem', 'padding': '.5rem'}}>{ethBal!==undefined ? ethers.utils.formatEther(ethBal).substring(0,6) : "error"} ETH</Box>
-                        <Box sx={{'margin': '0 0 0 .5rem', 'padding': '.5rem', 'background':'black', 'color': 'white'}}>{walletAddress.slice(0,5)} ... {walletAddress.slice(walletAddress.length-3, walletAddress.length)}</Box>
+                        <Box sx={{'margin': '0 0 0 .5rem', 'padding': '.5rem', 'background':'black', 'color': 'white'}}>{walletAddress.substring(0,5)} ... {walletAddress.substring(walletAddress.length-3, walletAddress.length)}</Box>
                     </Box>
                     )
                 }
