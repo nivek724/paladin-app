@@ -3,18 +3,35 @@ import { ethers } from 'ethers';
 import { CustomButton } from './styles';
 
 
+
 interface Props {
-    setWalletAddress: React.Dispatch<React.SetStateAction<string>>
+    walletAddress: string,
+    contractAddress: string;
+    provider: ethers.providers.Web3Provider | undefined,
+    signer: ethers.providers.JsonRpcSigner | undefined,
+    contract: ethers.Contract | undefined,
+    changeWallet: Function,
+    changeEthers: Function,
+    changeEth: Function,
 }
 
 const WalletButton : React.FC<Props> = (props) => {
 
     const {
-        setWalletAddress,
+        walletAddress,
+        contractAddress, 
+        provider,
+        signer,
+        contract,
+        changeWallet,
+        changeEthers,
+        changeEth,
     } = props;
 
     const handleAccountUpdate = (address:string) => {
-        setWalletAddress(address);
+        changeWallet(address);
+        changeEthers();
+        changeEth(address);
     }
 
     const handleWalletButton = () => {
@@ -26,12 +43,14 @@ const WalletButton : React.FC<Props> = (props) => {
             .catch((error: {message: string} ) => {
                 console.log(error.message);
             })
+        } else {
+            console.log('Need metamask');
         }
 
     };
 
     return(
-        <CustomButton variant='contained' onClick={handleWalletButton} disabled>
+        <CustomButton variant='contained' onClick={handleWalletButton}>
             Connect Wallet
         </CustomButton>
     );
