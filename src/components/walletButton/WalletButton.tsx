@@ -5,32 +5,34 @@ import { CustomButton } from './styles';
 
 
 interface Props {
-    walletAddress: string,
-    contractAddress: string;
-    provider: ethers.providers.Web3Provider | undefined,
-    signer: ethers.providers.JsonRpcSigner | undefined,
-    contract: ethers.Contract | undefined,
+    // walletAddress: string,
+    // contractAddress: string;
+    // provider: ethers.providers.Web3Provider | undefined,
+    // signer: ethers.providers.JsonRpcSigner | undefined,
+    // contract: ethers.Contract | undefined,
     changeWallet: Function,
     changeEthers: Function,
     changeEth: Function,
+    styles?: any,
 }
 
 const WalletButton : React.FC<Props> = (props) => {
 
     const {
-        walletAddress,
-        contractAddress, 
-        provider,
-        signer,
-        contract,
+        // walletAddress,
+        // contractAddress, 
+        // provider,
+        // signer,
+        // contract,
         changeWallet,
         changeEthers,
         changeEth,
+        styles,
     } = props;
 
     const handleAccountUpdate = (address:string) => {
         changeWallet(address);
-        changeEthers();
+        changeEthers(address);
         changeEth(address);
     }
 
@@ -50,7 +52,7 @@ const WalletButton : React.FC<Props> = (props) => {
     };
 
     return(
-        <CustomButton variant='contained' onClick={handleWalletButton}>
+        <CustomButton variant='contained' onClick={handleWalletButton} sx={styles}>
             Connect Wallet
         </CustomButton>
     );

@@ -1,9 +1,48 @@
 import React, {useState} from 'react';
-import {Box, MenuItem, Select, SelectChangeEvent, makeStyles} from '@mui/material';
-import {CustomSvg} from './styles';
+import {Box, MenuItem, Select, SelectChangeEvent, TextField, Button} from '@mui/material';
+import {CustomImg, WalletButtonTwo, Cp} from './styles';
 import uniToken from '../../images/UniToken.svg';
+import { ethers } from 'ethers';
+import PoolButton from '../poolButton/PoolButton';
 
-const PoolTable: React.FC = () => {
+
+interface Props {
+    walletAddress: string,
+    ethBal: ethers.BigNumberish | undefined,
+    // contractAddress: string;
+    // provider: ethers.providers.Web3Provider | undefined,
+    // signer: ethers.providers.JsonRpcSigner | undefined,
+    // contract: ethers.Contract | undefined,
+    changeWallet: Function,
+    changeEthers: Function,
+    changeEth: Function,
+    approve: Function,
+    buttonText: string,
+    tokenBal: string,
+    checkTokenBal: Function,
+    setDeposit: Function,
+    poolStats: any,
+}
+
+const PoolTable: React.FC<Props> = (props) => {
+    const {
+        walletAddress,
+        ethBal,
+        // contractAddress, 
+        // provider,
+        // signer,
+        // contract,
+        changeWallet,
+        changeEth,
+        changeEthers,
+        approve,
+        buttonText,
+        tokenBal,
+        checkTokenBal,
+        setDeposit,
+        poolStats,
+    } = props;
+
     const bigStyle = {
         background: 'black',
         color: 'white',
@@ -25,7 +64,8 @@ const PoolTable: React.FC = () => {
 
     const flexStyle = {
         display: 'flex',
-        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
     }
 
     const selectStyle = {
@@ -35,15 +75,18 @@ const PoolTable: React.FC = () => {
     }
 
     const [coinType, setCoinType] = useState('UNI');
-    const [balance, setBalance] = useState(0.0);
-    const [poolStats, setPoolStats] = useState(0);
-    // const [coinType, setCoinType] = useState('UNI');
-    // const [coinType, setCoinType] = useState('UNI');
+    
 
 
     const handleCoinChange = (event: SelectChangeEvent) => {
         //update all display values
         setCoinType(event.target.value as string);
+        checkTokenBal(event.target.value as string);
+    }
+
+    const handleInput = (event: any) => {
+        let deposit = event.target.value;
+        setDeposit(deposit);
     }
 
 
@@ -60,18 +103,58 @@ const PoolTable: React.FC = () => {
                         sx={selectStyle}
                     >
                         <MenuItem value={'UNI'}>
-                            <CustomSvg src={uniToken}/>
+                            <CustomImg src={uniToken}/>
                             UNI
                         </MenuItem>
-                        <MenuItem value={'ETH'}>ETH</MenuItem>
+                        <MenuItem value={'PALUNI'}>PalUNI</MenuItem>
                     </Select>
-                    <div>0.0</div>
+                    <Button sx={{'color': '#F56736', 'background': '#F567364D', 'margin': '0 1rem'}}>Max</Button>
+                    <div style={{'flexBasis': '60%'}}/>
+                    <TextField id='deposit-box' label="num" placeholder='0.0' size="small" sx={{'width': '20%', 'background': '#F567364D'}} onChange={handleInput} disabled={buttonText==='Deposit'}></TextField>
                 </Box>
-                Balance: {balance}
+                Balance: {`${tokenBal} ${coinType}`}
             </Box>
             <Box sx={smallStyle}>
-                Testing
+                <Box sx={{'display': 'flex', 'flexDirection': 'row', 'justifyContent': 'space-between', 'margin': '0 .5rem'}}>
+                    <Cp style={{fontWeight: 900, textDecoration: 'underline'}}>Pool Stats</Cp>
+                </Box>
+                <Box sx={{'display': 'flex', 'flexDirection': 'row', 'justifyContent': 'space-between', 'margin': '0 .5rem'}}>
+                    <Cp>Total Supply</Cp>
+                    <Cp>{`${poolStats.userSupply} ${coinType} / $${poolStats.totalSupply}`}</Cp>
+                </Box>
+                <Box sx={{'display': 'flex', 'flexDirection': 'row', 'justifyContent': 'space-between', 'margin': '0 .5rem'}}>
+                    <Cp>Total Borrowed</Cp>
+                    <Cp>{`${poolStats.userBorrowed} ${coinType} / $${poolStats.totalBorrowed}`}</Cp>
+                </Box>
+                <Box sx={{'display': 'flex', 'flexDirection': 'row', 'justifyContent': 'space-between', 'margin': '0 .5rem'}}>
+                    <Cp>Active Loans</Cp>
+                    <Cp>{`${poolStats.activeLoans}`}</Cp>
+                </Box>
+                <Box sx={{'display': 'flex', 'flexDirection': 'row', 'justifyContent': 'space-between', 'margin': '0 .5rem'}}>
+                    <Cp>Minimum Borrow Period</Cp>
+                    <Cp>{'7 days'}</Cp>
+                </Box>
             </Box>
+
+            { !walletAddress && 
+                <WalletButtonTwo 
+                // walletAddress={walletAddress}
+                // contractAddress={contractAddress} 
+                // provider={provider} 
+                // signer={signer}
+                // contract={contract}
+                changeWallet={changeWallet}
+                changeEthers={changeEthers}
+                changeEth={changeEth}
+                styles={{'background': '#80381F',}}
+                >
+                    Connect To a Wallet 
+                </WalletButtonTwo>
+            }
+            {   walletAddress && 
+                <PoolButton text={buttonText} callback={approve} styles={{}} />
+
+            }
         </Box>
 
     );
