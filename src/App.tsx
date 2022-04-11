@@ -45,14 +45,14 @@ function App() {
   const [contractPool, setContractPool] = React.useState<ethers.Contract>(); //POOL 
 
   interface PoolStats {
-    totalSupply: number
-    userSupply: number
-    totalBorrowed: number
-    userBorrowed: number
-    activeLoans: number
+    totalSupply: string
+    userSupply: string
+    totalBorrowed: string
+    userBorrowed: string
+    activeLoans: string
   }
 
-  const [poolStats, setPoolStats] = React.useState<PoolStats>({totalSupply: 0, userSupply: 0, totalBorrowed: 0, userBorrowed: 0, activeLoans: 0});
+  const [poolStats, setPoolStats] = React.useState<PoolStats>({totalSupply: '0', userSupply: '0', totalBorrowed: '0', userBorrowed: '0', activeLoans: '0'});
 
   const [tokenBal, setTokenBal] = useState('0.0');
 
@@ -111,8 +111,9 @@ function App() {
     setContract(tempContract2);
 
     let bal = await tempContract2.balanceOf(address);
-    console.log(ethers.utils.formatEther(bal.toString()));
     setTokenBal(ethers.utils.formatEther(bal.toString()));
+
+    getPoolStats(address,tempContract);
   }
 
   const changeWallet = (address:string) => {
@@ -131,17 +132,35 @@ function App() {
 
   const depositFunc = async () => {
     //contractpool
-    if(contractPool)
-      await contractPool.deposit(walletAddress, deposit, contractAddress);
+    if(contract){
+      try{
+        console.log(ethers.utils.formatUnits(deposit,18))
+        let paltoken = await contract.transferFrom(walletAddress, contractAddress, ethers.utils.parseUnits(deposit,18));// not sure what to do with paltoken returned
+        console.log(paltoken);
+      }
+      catch(e) {
+        console.log(e);
+      }
+    }
     setDeposit('0');
+    getPoolStats(walletAddress,contractPool as ethers.Contract);
+    checkTokenBal('UNI'); //change to have state var here instead of at lower level
   }
 
-  const getPoolStats = async () => {
-    let pool = {totalSupply: 0, userSupply: 0, totalBorrowed: 0, userBorrowed: 0, activeLoans: 0};
-    if(contractPool) {
-      pool.userBorrowed = await contractPool.underlyingbalanceof(walletAddress);
-    }
-    
+  const getPoolStats = async (address:string, contract: ethers.Contract) => {
+    let pool = {totalSupply: '0', userSupply: '0', totalBorrowed: '0', userBorrowed: '0', activeLoans: '0'};
+    pool.userBorrowed = (await contract.underlyingBalanceOf(address)).toString();
+    pool.totalBorrowed = (await contract.totalBorrowed()).toString();
+    pool.userSupply = (await contract.balanceOf(address)).toString();
+    pool.totalSupply = (await contract.totalReserve()).toString();
+    // let activeLoans = await contract.getLoansPools();  //Checks for all loans in pool
+    let activeLoans = await contract.getLoansByBorrower(address); //checks for all loans by borrower
+    pool.activeLoans = activeLoans.filter(async (loan:any) =>{
+            let loanInfo = await contract.getBorrowData(loan);
+            return !loanInfo._closed
+          }).length
+    console.log(pool); //Testing
+    setPoolStats(pool);
   }
 
 
