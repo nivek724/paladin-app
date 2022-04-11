@@ -108,7 +108,7 @@ const PoolTable: React.FC<Props> = (props) => {
                         </MenuItem>
                         <MenuItem value={'PALUNI'}>PalUNI</MenuItem>
                     </Select>
-                    <Button sx={{'color': '#F56736', 'background': '#F567364D', 'margin': '0 1rem'}}>Max</Button>
+                    <Button sx={{'color': '#F56736', 'background': '#F567364D', 'margin': '0 1rem'}} disabled>Max</Button>
                     <div style={{'flexBasis': '60%'}}/>
                     <TextField id='deposit-box' label="num" placeholder='0.0' size="small" sx={{'width': '20%', 'background': '#F567364D'}} onChange={handleInput} disabled={buttonText==='Deposit'}></TextField>
                 </Box>

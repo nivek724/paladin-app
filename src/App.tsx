@@ -11,9 +11,9 @@ import PalPool from './abi/PalPool.json';
 import { createTheme, ThemeProvider } from '@mui/material';
 
 const tokenAddress = {
-  UNI: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
+  UNI: '0x075A36BA8846C6B6F53644fDd3bf17E5151789DC',
   PALUNI: '0x961692fb4Ca983A116a6432E2b82972094c71cf2',
-}
+} //add more tokens here 
 
 function App() {
 
@@ -36,7 +36,8 @@ function App() {
   
   const [walletAddress, setWalletAddress] = useState(''); 
   const [contractAddress, setContractAddress] = useState('0xB1265A6B2C5d43Ff358A847DF64fD825b7ed70e0'); //Uni Pool address
-  const [secondContractAddress, setSecondContractAddress] = useState('0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984') //ERC20 starts with UNI
+  //PalUni pool address 0xB1265A6B2C5d43Ff358A847DF64fD825b7ed70e0 // 0xca7924020aa36e3c8b4e16fC2ACF1BdeA4d6fb12
+  const [secondContractAddress, setSecondContractAddress] = useState('0x075A36BA8846C6B6F53644fDd3bf17E5151789DC') //ERC20 starts with UNI
   const [ethBal, setEthBal] = React.useState<ethers.BigNumberish>();
 
   const [provider, setProvider] = React.useState<ethers.providers.Web3Provider>();
@@ -126,16 +127,19 @@ function App() {
     setEthBal(balance);
   }
 
-  const approvalFunc = (tokensToDeposit: number) => {
+  const approvalFunc = async (tokensToDeposit: number) => {
+    if(contract) {
+      let boo = await contract.approve(contractAddress, ethers.utils.parseEther(tokensToDeposit.toString()))
+    }
     console.log(tokensToDeposit);
   }
 
   const depositFunc = async () => {
     //contractpool
-    if(contract){
+    if(contractPool){
       try{
-        console.log(ethers.utils.formatUnits(deposit,18))
-        let paltoken = await contract.transferFrom(walletAddress, contractAddress, ethers.utils.parseUnits(deposit,18));// not sure what to do with paltoken returned
+        console.log(ethers.utils.parseEther(deposit), deposit);
+        let paltoken = await contractPool.deposit(ethers.utils.parseEther(deposit));// not sure what to do with paltoken returned ethers.utils.parseEther(deposit)
         console.log(paltoken);
       }
       catch(e) {
@@ -149,10 +153,10 @@ function App() {
 
   const getPoolStats = async (address:string, contract: ethers.Contract) => {
     let pool = {totalSupply: '0', userSupply: '0', totalBorrowed: '0', userBorrowed: '0', activeLoans: '0'};
-    pool.userBorrowed = (await contract.underlyingBalanceOf(address)).toString();
-    pool.totalBorrowed = (await contract.totalBorrowed()).toString();
-    pool.userSupply = (await contract.balanceOf(address)).toString();
-    pool.totalSupply = (await contract.totalReserve()).toString();
+    pool.userBorrowed = ethers.utils.formatUnits(await contract.underlyingBalanceOf(address), 18).substring(0,7);
+    pool.totalBorrowed = ethers.utils.formatUnits(await contract.totalBorrowed(), 18).substring(0,7);
+    pool.userSupply = ethers.utils.formatUnits(await contract.balanceOf(address), 18).substring(0,7);
+    pool.totalSupply = ethers.utils.formatUnits(await contract.totalReserve(), 18).substring(0,7);
     // let activeLoans = await contract.getLoansPools();  //Checks for all loans in pool
     let activeLoans = await contract.getLoansByBorrower(address); //checks for all loans by borrower
     pool.activeLoans = activeLoans.filter(async (loan:any) =>{
