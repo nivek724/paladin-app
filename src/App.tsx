@@ -153,16 +153,18 @@ function App() {
 
   const getPoolStats = async (address:string, contract: ethers.Contract) => {
     let pool = {totalSupply: '0', userSupply: '0', totalBorrowed: '0', userBorrowed: '0', activeLoans: '0'};
-    pool.userBorrowed = ethers.utils.formatUnits(await contract.underlyingBalanceOf(address), 18).substring(0,7);
+    // pool.userBorrowed = ethers.utils.formatUnits(await contract.(address), 18).substring(0,7);
     pool.totalBorrowed = ethers.utils.formatUnits(await contract.totalBorrowed(), 18).substring(0,7);
-    pool.userSupply = ethers.utils.formatUnits(await contract.balanceOf(address), 18).substring(0,7);
+    pool.userSupply = ethers.utils.formatUnits(await contract.underlyingBalanceOf(address), 18).substring(0,7);
     pool.totalSupply = ethers.utils.formatUnits(await contract.totalReserve(), 18).substring(0,7);
     // let activeLoans = await contract.getLoansPools();  //Checks for all loans in pool
     let activeLoans = await contract.getLoansByBorrower(address); //checks for all loans by borrower
-    pool.activeLoans = activeLoans.filter(async (loan:any) =>{
+    let openLoans = activeLoans.filter(async (loan:any) =>{
             let loanInfo = await contract.getBorrowData(loan);
             return !loanInfo._closed
-          }).length
+          });
+    pool.userBorrowed = openLoans.reduce(async (sum:BigNumber, loan:any) => sum.add(loan._amount),BigNumber.from('0'));
+    pool.activeLoans = openLoans.length;
     console.log(pool); //Testing
     setPoolStats(pool);
   }
