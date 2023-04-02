@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/static/css/main.1b44a486.css",
-    "main.js": "/static/js/main.28445d7b.js",
-    "static/js/787.6af04b52.chunk.js": "/static/js/787.6af04b52.chunk.js",
-    "static/media/UniToken.svg": "/static/media/UniToken.18e72555b2813827d717d83496dc9d84.svg",
-    "index.html": "/index.html",
-    "main.1b44a486.css.map": "/static/css/main.1b44a486.css.map",
-    "main.28445d7b.js.map": "/static/js/main.28445d7b.js.map",
-    "787.6af04b52.chunk.js.map": "/static/js/787.6af04b52.chunk.js.map"
+    "main.css": "/paladin-app/static/css/main.1b44a486.css",
+    "main.js": "/paladin-app/static/js/main.9754cdad.js",
+    "static/js/787.6af04b52.chunk.js": "/paladin-app/static/js/787.6af04b52.chunk.js",
+    "static/media/UniToken.svg": "/paladin-app/static/media/UniToken.18e72555b2813827d717d83496dc9d84.svg",
+    "index.html": "/paladin-app/index.html",
+    "main.1b44a486.css.map": "/paladin-app/static/css/main.1b44a486.css.map",
+    "main.9754cdad.js.map": "/paladin-app/static/js/main.9754cdad.js.map",
+    "787.6af04b52.chunk.js.map": "/paladin-app/static/js/787.6af04b52.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.1b44a486.css",
-    "static/js/main.28445d7b.js"
+    "static/js/main.9754cdad.js"
   ]
 }
